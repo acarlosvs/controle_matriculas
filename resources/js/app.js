@@ -1,33 +1,40 @@
+// The following line loads the standalone build of Vue instead of the runtime-only build,
+// so you don't have to do: import Vue from 'vue/dist/vue'
+// This is done with the browser options. For the config, see package.json
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+import Vue from 'vue'
+import VueResource from 'vue-resource'
+import moment from 'moment'
+import Mixins from './Mixin.js'
+import money from 'v-money'
+import Swal from 'sweetalert2'
+import VueTheMask from 'vue-the-mask'
 
-require('./bootstrap');
+window.Inputmask = require('inputmask');
 
-window.Vue = require('vue');
-
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-const app = new Vue({
-    el: '#app'
+Vue.directive('input-mask', {
+    bind: function(el) {
+        new Inputmask({
+            mask: $(el).attr('mask'),
+        }).mask(el);
+    },
 });
+
+Vue.mixin(Mixins)
+Vue.use(VueResource)
+Vue.use(money, {precision: 2})
+
+window.moment = moment;
+
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf-token').getAttribute('content');
+
+import Home from './components/Home.vue'
+import FormTurmas from './components/FormTurmas.vue'
+
+new Vue({
+    el: '#app',
+    components: {
+        Home,
+        FormTurmas,
+    },
+})

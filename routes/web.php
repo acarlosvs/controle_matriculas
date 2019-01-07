@@ -12,5 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
+});
+
+Route::group(['prefix'=> 'turmas'], function(){
+    Route::get('/nova-turma', 'TurmaController@getCadastroDeTurmas');
+    Route::post('/nova-turma', 'TurmaController@postCadastroDeTurmas');
 });
